@@ -2,7 +2,7 @@
 // Run with: npm run images
 import sharp from 'sharp';
 import { mkdir, writeFile } from 'node:fs/promises';
-import { MONOGRAM, MONOGRAM_COLORS, monogramSvg } from '../src/lib/monogram.js';
+import { monogramSvg } from '../src/lib/monogram.js';
 
 const SRC = 'source-images';
 const OUT = 'src/assets/images';
@@ -87,33 +87,12 @@ for (const job of jobs) {
   }
 }
 
-// Open Graph preview image (1200x630).
-const portrait = await sharp(`${SRC}/portrait.jpg`)
-  .extract({ left: 150, top: 0, width: 609, height: 640 })
-  .resize(420, 441)
-  .toBuffer();
-
-const ogText = Buffer.from(`
-<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
-  <rect width="1200" height="630" fill="#f5f4f0"/>
-  <g stroke="#e3e1da" stroke-width="1">
-    ${Array.from({ length: 21 }, (_, i) => `<line x1="${i * 40}" y1="0" x2="${i * 40}" y2="630"/>`).join('')}
-    ${Array.from({ length: 16 }, (_, i) => `<line x1="0" y1="${i * 40}" x2="800" y2="${i * 40}"/>`).join('')}
-  </g>
-  <g transform="translate(72 112) scale(1.25)">
-    <rect width="64" height="64" rx="${MONOGRAM.radius}" fill="${MONOGRAM_COLORS.light.bg}"/>
-    <path d="${MONOGRAM.letters}" fill="${MONOGRAM_COLORS.light.fg}" fill-rule="evenodd"/>
-    <path d="${MONOGRAM.accent}" fill="${MONOGRAM_COLORS.light.accent}"/>
-  </g>
-  <text x="72" y="250" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="50" font-weight="700" fill="#16181d">Felix Miguel M. Atenin</text>
-  <text x="72" y="312" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="32" fill="#2457c5">IT Support &amp; Web Developer</text>
-  <text x="72" y="380" font-family="Consolas, Menlo, monospace" font-size="22" fill="#5b5f68">IT Support · Web Development · Mobile Development</text>
-  <text x="72" y="540" font-family="Consolas, Menlo, monospace" font-size="20" fill="#5b5f68">Tandag City, Surigao del Sur, Philippines</text>
-</svg>`);
-
-await sharp(ogText)
-  .composite([{ input: portrait, left: 1200 - 420 - 56, top: 94 }])
-  .jpeg({ quality: 82 })
+// Open Graph preview image (1200x630): a capture of the hero, header to stats,
+// in the light theme. og-hero.png is the top 1600x840 of the page at 2x pixel
+// density; retake it after changing the hero.
+await sharp(`${SRC}/og-hero.png`)
+  .resize(1200, 630)
+  .jpeg({ quality: 86, mozjpeg: true })
   .toFile('public/og-image.jpg');
 console.log('public/og-image.jpg');
 
