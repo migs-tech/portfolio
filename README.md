@@ -40,6 +40,7 @@ All text lives in the content files; components only render it.
 - **Light and dark theme:** the site follows the visitor's system setting; the header button switches it and the choice is remembered on that device. Colours are tokens at the top of `src/styles/base.css`.
 - **Live demos ("Try it"):** working replicas of each system's core flow, with sample data and no network calls: `src/components/demos/OjtrackDemo.jsx` (OTP → one-time QR → supervisor scan) and `PrimesysDemo.jsx` (a purchase request moving through the seven statuses).
 - **Fit check:** visitors paste a job post and get a fit score, the post with skills highlighted (green: on my résumé, amber: not yet) and where I used each one; they can then copy a summary or send the role through the contact form. Matching runs in the browser (`src/lib/jobFit.js`), so nothing pasted is sent anywhere. In `src/content/jobFit.js`, `fitSkills` lists my skills with the words a post might use for them, and `notYet` lists common requirements I can't claim, which lower the score so it stays honest. When you learn something, move it from `notYet` to `fitSkills` with where you used it.
+- **Visitor counter:** the footer shows "N visitors so far" (and `visitors` in the command palette prints it). `api/visits.js` is a Vercel Function that keeps one number in an Upstash Redis database. Each browser counts once. To stop someone counting twice in a day, a salted, one-way hash of their IP address is kept for 24 hours and then deleted. No names, IP addresses or cookies are stored, and only the total is ever shown. Automated browsers never count. The counter stays hidden until it's set up (see Deploying) and in local development.
 - **Skill map:** `skillHubs` and `skillLinks` in `profile.js` say where each skill was used; only add links you can back up. Phones show the skill cards instead.
 - **Command palette:** Ctrl K / ⌘K or `/` opens it. Commands (including the terminal ones like `whoami` and `sudo hire felix`) are listed in `buildCommands()` in `src/components/ui/CommandPalette.jsx`.
 - **Live badges:** the "Live" badge on each project pings the live site from the visitor's browser and shows the response time (`src/lib/ping.js`).
@@ -56,4 +57,6 @@ Neither value is a secret; don't put private keys in `VITE_*` variables, because
 
 ## Deploying
 
-The build is a static site. Any static host works (Vercel, Netlify, GitHub Pages, Cloudflare Pages). Build command `npm run build`, output directory `dist`.
+The site is live on Vercel at https://felixmigs.vercel.app, deployed from the `main` branch on GitHub: every `git push` publishes. Build command `npm run build`, output directory `dist`. The site itself is static, so any static host works, but the visitor counter (`api/visits.js`) needs Vercel Functions.
+
+**Visitor counter setup (once):** in the Vercel project, open **Storage**, create an **Upstash for Redis** database on the free plan and connect it to this project. That adds the `KV_REST_API_URL` and `KV_REST_API_TOKEN` settings (`UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` work too). Then redeploy. Until then, the counter simply doesn't show.

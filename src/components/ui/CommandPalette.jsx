@@ -7,6 +7,7 @@ import { canTiltWithDevice, enableDeviceTilt } from '../../lib/deviceTilt';
 import { paletteShortcut } from '../../lib/palette';
 import { ping } from '../../lib/ping';
 import { downloadResume, openResume } from '../../lib/resume';
+import { fetchVisitors } from '../../lib/visits';
 import { toggleTheme } from '../../lib/theme';
 import { Icon } from './Icon';
 
@@ -15,15 +16,31 @@ const smooth = () => (window.matchMedia('(prefers-reduced-motion: reduce)').matc
 
 // Scroll to a section and move keyboard focus there, closing a case study or the résumé first if one is open.
 function goTo(id) {
-  document.querySelector('.project-dialog[open]')?.close();
-  document.querySelector('.resume-dialog[open]')?.close();
-  setTimeout(() => {
+  const scroll = () => {
     const target = document.getElementById(id);
     if (!target) return;
     target.scrollIntoView({ behavior: smooth() });
     target.setAttribute('tabindex', '-1');
     target.focus({ preventScroll: true });
-  }, 60);
+  };
+  const dialogs = [...document.querySelectorAll('.project-dialog[open], .resume-dialog[open]')];
+  if (!dialogs.length) {
+    setTimeout(scroll, 60);
+    return;
+  }
+  // Closing a dialog steps back in history, and the browser restores the old
+  // scroll position when it does; scroll only after that, or it cancels ours.
+  let done = false;
+  const once = () => {
+    if (done) return;
+    done = true;
+    window.removeEventListener('popstate', after);
+    setTimeout(scroll, 30);
+  };
+  const after = () => once();
+  window.addEventListener('popstate', after);
+  setTimeout(once, 400); // dialogs opened from a direct link have no history step
+  dialogs.forEach((dialog) => dialog.close());
 }
 
 // Every command: `run` either acts (the palette closes first) or, for terminal
@@ -108,6 +125,13 @@ function buildCommands() {
             return up ? `✔ ${displayUrl(live(p).url)}  ${ms} ms` : `✕ ${displayUrl(live(p).url)}  no response`;
           }),
         ) },
+    { id: 'visitors', group: 'Terminal', label: 'visitors', mono: true, terminal: true, keywords: 'count stats analytics views',
+      run: async () => {
+        const total = await fetchVisitors({ count: false });
+        return total === null
+          ? ['The visitor counter isn’t available right now.']
+          : [`${total.toLocaleString('en-US')} ${total === 1 ? 'visitor' : 'visitors'} so far`, 'Counted anonymously: no names, no tracking.'];
+      } },
     { id: 'lp', group: 'Terminal', label: 'lp resume.pdf', mono: true, keywords: 'print cv',
       lines: ['request id is felix-1 (1 file)', '→ Printing…'],
       run: openResume },
