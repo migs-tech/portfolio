@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-// Endless decorative animations (the "live" dots, the skill map's halos) keep the
+// Endless decorative animations (the "live" dots, the skill galaxy's stars) keep the
 // browser drawing frames even when nobody can see them. Each page section gets
 // data-offscreen while it's out of view, and motion.css pauses those animations.
 export function usePauseOffscreen() {

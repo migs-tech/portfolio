@@ -633,7 +633,11 @@
 /* Sections out of view pause their endless animations (hooks/usePauseOffscreen.js). */
 [data-offscreen] .status-dot::after,
 [data-offscreen] .ps-dot::after,
-[data-offscreen] .sm-halo {
+[data-offscreen] .gx-spiral,
+[data-offscreen] .gx-rays,
+[data-offscreen] .gx-corona,
+[data-offscreen] .gx-spark,
+[data-offscreen] .gx-star > .gx-pill {
   animation-play-state: paused !important; /* over the animation shorthands' "running" */
 }
 
