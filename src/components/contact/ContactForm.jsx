@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { profile } from '../../content/profile';
 import { confetti } from '../../lib/confetti';
 import { Icon } from '../ui/Icon';
@@ -28,6 +28,17 @@ export function ContactForm() {
   const [status, setStatus] = useState('idle'); // idle | sending | sent | mailto | error
   const formRef = useRef(null);
   const submitRef = useRef(null);
+
+  // Other parts of the page can start the message (lib/contact.js).
+  useEffect(() => {
+    const onCompose = (event) => {
+      setValues((current) => ({ ...current, message: event.detail }));
+      setErrors((current) => ({ ...current, message: undefined }));
+      setStatus('idle');
+    };
+    window.addEventListener('portfolio:compose', onCompose);
+    return () => window.removeEventListener('portfolio:compose', onCompose);
+  }, []);
 
   // A small celebration from the Send button once the message is confirmed.
   const celebrate = () => {

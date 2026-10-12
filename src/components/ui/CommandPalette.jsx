@@ -77,6 +77,11 @@ function buildCommands() {
         setTimeout(() => openCertificate(cert.id), 700);
       },
     })),
+    { id: 'fit', group: 'Actions', label: 'Check how I fit your job', icon: 'briefcase', keywords: 'hiring recruiter role match job post',
+      run: () => {
+        goTo('fit');
+        setTimeout(() => document.getElementById('fit-post')?.focus({ preventScroll: true }), 700);
+      } },
     { id: 'message', group: 'Actions', label: 'Send a message', icon: 'mail', keywords: 'contact form hire',
       run: () => {
         goTo('contact');

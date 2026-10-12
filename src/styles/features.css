@@ -46,7 +46,8 @@ kbd {
   }
 }
 
-@media (max-width: 900px) {
+/* Icon only below 1024px, leaving room for the header's links. */
+@media (max-width: 1024px) {
   .palette-trigger {
     justify-content: center;
     width: 38px;
@@ -399,6 +400,378 @@ kbd {
 .resume-btn.is-saved .icon-check {
   opacity: 1;
   transform: none;
+}
+
+/* ---------- Job fit checker ---------- */
+/* Paste a job post, see the matching skills highlighted and scored
+   (components/sections/JobFit.jsx). Animations are in motion.css. */
+.fit {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  align-items: start;
+  gap: 20px;
+}
+
+.fit-panel {
+  padding: clamp(20px, 3vw, 30px);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.fit-input .field textarea {
+  min-height: 260px;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.fit-hint {
+  color: var(--ink-3);
+  font-size: 0.8rem;
+}
+
+.fit-samples {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.fit-samples-label {
+  margin-right: 2px;
+  color: var(--ink-3);
+  font-size: 0.85rem;
+}
+
+.fit-sample {
+  min-height: 32px;
+  padding: 0 12px;
+  border: 1px dashed var(--line-strong);
+  border-radius: 999px;
+  background: none;
+  color: var(--ink-2);
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    color 0.2s var(--ease),
+    border-color 0.2s var(--ease);
+}
+
+.fit-sample:hover {
+  border-style: solid;
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.fit-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.fit-post-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.fit-post-title {
+  min-width: 0;
+  overflow: hidden;
+  font-size: 1.05rem;
+  font-weight: 650;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fit-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin-bottom: 12px;
+  color: var(--ink-3);
+  font-size: 0.78rem;
+}
+
+.fit-key {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.fit-key::before {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  background: var(--hl);
+  box-shadow: inset 0 -2px 0 var(--hl-line);
+}
+
+.fit-key.is-yes,
+.fit-post mark.is-yes {
+  --hl: color-mix(in srgb, var(--ok) 20%, transparent);
+  --hl-line: color-mix(in srgb, var(--ok) 75%, transparent);
+}
+
+.fit-key.is-no,
+.fit-post mark.is-no {
+  --hl: color-mix(in srgb, #d29922 22%, transparent);
+  --hl-line: #d29922;
+}
+
+.fit-post {
+  max-height: 440px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--ink-2);
+  font-size: 0.925rem;
+  line-height: 1.75;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.fit-post mark {
+  margin: 0 -2px;
+  padding: 1px 2px;
+  border-radius: 3px;
+  background: linear-gradient(var(--hl), var(--hl)) no-repeat left / 100% 100%;
+  box-shadow: inset 0 -2px 0 var(--hl-line);
+  color: var(--ink);
+}
+
+.fit-empty {
+  display: grid;
+  justify-items: center;
+  gap: 16px;
+  padding: 28px 8px;
+  color: var(--ink-3);
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+.fit-empty p {
+  max-width: 36ch;
+}
+
+.fit-tone-ok {
+  --tone: var(--ok);
+}
+
+.fit-tone-accent {
+  --tone: var(--accent);
+}
+
+.fit-tone-warn {
+  --tone: #c27c0e;
+}
+
+.fit-score {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+/* Score ring: the circle's length is 100, so the dash offset is 100 − score. */
+.fit-ring {
+  position: relative;
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: 116px;
+  height: 116px;
+}
+
+.fit-ring svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.fit-ring circle {
+  fill: none;
+  stroke-width: 10;
+}
+
+.fit-ring-track {
+  stroke: var(--line);
+}
+
+.fit-ring.is-empty .fit-ring-track {
+  stroke: var(--line-strong);
+  stroke-dasharray: 4 7;
+  stroke-width: 4;
+}
+
+.fit-ring-value {
+  stroke: var(--tone);
+  stroke-dasharray: 100px 100px;
+  stroke-dashoffset: calc((100 - var(--score, 0)) * 1px);
+  stroke-linecap: round;
+}
+
+.fit-ring-label {
+  position: relative;
+  font-size: 1.9rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.fit-ring.is-empty .fit-ring-label {
+  color: var(--ink-3);
+}
+
+.fit-ring-label small {
+  margin-left: 1px;
+  color: var(--ink-3);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.fit-level {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.25rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.fit-level::before {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--tone);
+}
+
+.fit-summary {
+  margin-top: 2px;
+  color: var(--ink-2);
+  font-size: 0.92rem;
+}
+
+.fit-subhead {
+  margin: 20px 0 10px;
+  color: var(--ink-3);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.fit-list {
+  display: grid;
+  gap: 9px;
+  margin: 0;
+  padding: 0;
+}
+
+/* Check mark in its own column, so wrapped evidence lines up under the skill. */
+.fit-row {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr);
+  align-items: start;
+  gap: 10px;
+  font-size: 0.92rem;
+}
+
+.fit-row > .icon {
+  margin-top: 3px;
+  color: var(--ok);
+}
+
+.fit-what {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 6px;
+}
+
+.fit-skill {
+  margin-right: 4px;
+  font-weight: 550;
+}
+
+.fit-evidence {
+  padding: 1px 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--ink-3);
+  font-size: 0.74rem;
+}
+
+a.fit-evidence {
+  border-color: color-mix(in srgb, var(--accent) 30%, var(--line));
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a.fit-evidence:hover {
+  border-color: var(--accent);
+}
+
+.fit-gaps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+}
+
+.fit-gaps li {
+  padding: 3px 10px;
+  border: 1px dashed #d29922;
+  border-radius: 999px;
+  color: var(--ink-2);
+  font-size: 0.8rem;
+}
+
+.fit-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+
+@media (max-width: 900px) {
+  .fit {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .fit-score {
+    gap: 14px;
+  }
+
+  .fit-ring {
+    width: 96px;
+    height: 96px;
+  }
+
+  .fit-ring-label {
+    font-size: 1.6rem;
+  }
 }
 
 /* ---------- Résumé viewer ---------- */

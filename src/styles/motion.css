@@ -273,6 +273,23 @@
       width 0.35s var(--ease);
   }
 
+  /* Job fit: the ring fills to the score, the post's skills get highlighted one
+     after another, and the matches drop in. */
+  .fit-ring-value {
+    animation: fit-ring 1.1s var(--ease) both;
+  }
+
+  .fit-post mark {
+    animation: fit-mark 0.5s var(--ease) both;
+    animation-delay: calc(var(--i, 0) * 30ms);
+  }
+
+  .fit-row,
+  .fit-gaps li {
+    animation: fit-in 0.45s var(--ease) both;
+    animation-delay: calc(0.25s + var(--i, 0) * 50ms);
+  }
+
   /* A tab jump swipes a highlighter over the section's heading. */
   .rv-section.is-flash .rv-h span {
     animation: rv-marker 1.3s var(--ease);
@@ -509,6 +526,26 @@
   to {
     opacity: 0;
     transform: translateY(-48px) scale(0.98);
+  }
+}
+
+@keyframes fit-ring {
+  from {
+    stroke-dashoffset: 100px;
+  }
+}
+
+@keyframes fit-mark {
+  from {
+    background-size: 0% 100%;
+    box-shadow: inset 0 0 0 transparent;
+  }
+}
+
+@keyframes fit-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
   }
 }
 

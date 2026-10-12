@@ -19,6 +19,7 @@ All text lives in the content files; components only render it.
 | --- | --- |
 | Name, email, résumé, hero bio, hero numbers, skills, experience, education, certificates, social links | `src/content/profile.js` |
 | Résumé viewer text | `src/content/resume.js` |
+| Job fit checker: skills it recognizes, gaps, sample posts | `src/content/jobFit.js` |
 | Project order | `src/content/projects.js` |
 | OJTrack project, features, stack, evaluation results, case study, screenshots | `src/content/ojtrack.js` |
 | PRimeSys project, features, stack, case study, screenshots | `src/content/primesys.js` |
@@ -38,6 +39,7 @@ All text lives in the content files; components only render it.
 - **Hero photo card:** the portrait (`portrait.jpg`) is on the front and the graduation photo (`portrait-graduation.jpg`, 4:5) on the back; visitors click or tap to flip it. The card turns over in the direction of the click: any of the four sides or four corners (corners give a slanted, diagonal flip), always landing upright. The card itself is `src/components/sections/HeroPortrait.jsx`.
 - **Light and dark theme:** the site follows the visitor's system setting; the header button switches it and the choice is remembered on that device. Colours are tokens at the top of `src/styles/base.css`.
 - **Live demos ("Try it"):** working replicas of each system's core flow, with sample data and no network calls: `src/components/demos/OjtrackDemo.jsx` (OTP → one-time QR → supervisor scan) and `PrimesysDemo.jsx` (a purchase request moving through the seven statuses).
+- **Fit check:** visitors paste a job post and get a fit score, the post with skills highlighted (green: on my résumé, amber: not yet) and where I used each one; they can then copy a summary or send the role through the contact form. Matching runs in the browser (`src/lib/jobFit.js`), so nothing pasted is sent anywhere. In `src/content/jobFit.js`, `fitSkills` lists my skills with the words a post might use for them, and `notYet` lists common requirements I can't claim, which lower the score so it stays honest. When you learn something, move it from `notYet` to `fitSkills` with where you used it.
 - **Skill map:** `skillHubs` and `skillLinks` in `profile.js` say where each skill was used; only add links you can back up. Phones show the skill cards instead.
 - **Command palette:** Ctrl K / ⌘K or `/` opens it. Commands (including the terminal ones like `whoami` and `sudo hire felix`) are listed in `buildCommands()` in `src/components/ui/CommandPalette.jsx`.
 - **Live badges:** the "Live" badge on each project pings the live site from the visitor's browser and shows the response time (`src/lib/ping.js`).

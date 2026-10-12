@@ -10,7 +10,7 @@ export function Contact() {
   return (
     <Section
       id="contact"
-      index="05"
+      index="06"
       label="Contact"
       title="Let’s work together"
       intro="I’m open to IT support, ICT, web and mobile development roles, and freelance work. Send a message here or email me directly."

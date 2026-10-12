@@ -229,6 +229,7 @@
   font-size: 0.9rem;
   color: var(--ink-2);
   text-decoration: none;
+  white-space: nowrap;
   transition:
     color 0.2s var(--ease),
     background-color 0.2s var(--ease);
@@ -315,6 +316,14 @@
 @media (max-width: 1080px) {
   .nav-link {
     padding-inline: 9px;
+  }
+}
+
+/* Small laptops and landscape tablets: six links still fit on one line. */
+@media (min-width: 901px) and (max-width: 1024px) {
+  .nav-link {
+    padding-inline: 7px;
+    font-size: 0.85rem;
   }
 }
 

@@ -6,6 +6,7 @@ import { Contact } from './components/sections/Contact';
 import { Demos } from './components/sections/Demos';
 import { Experience } from './components/sections/Experience';
 import { Hero } from './components/sections/Hero';
+import { JobFit } from './components/sections/JobFit';
 import { Projects } from './components/sections/Projects';
 import { Skills } from './components/sections/Skills';
 import { CommandPalette } from './components/ui/CommandPalette';
@@ -35,6 +36,7 @@ export default function App() {
         <Demos />
         <Experience />
         <Skills />
+        <JobFit />
         <Contact />
       </main>
       <Footer />
