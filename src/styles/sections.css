@@ -39,7 +39,10 @@
   align-items: center;
 }
 
+/* Above the photo column, so the profile views card can open over it. */
 .hero-kicker {
+  position: relative;
+  z-index: 5;
   display: flex;
   flex-wrap: wrap;
   align-items: center;

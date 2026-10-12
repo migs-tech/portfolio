@@ -2,6 +2,7 @@ import { highlights, profile, socialLinks } from '../../content/profile';
 import { ButtonLink, ResumeButton } from '../ui/Button';
 import { CountUp } from '../ui/CountUp';
 import { Icon } from '../ui/Icon';
+import { ProfileViews } from '../ui/ProfileViews';
 import { RotatingText } from '../ui/RotatingText';
 import { HeroPortrait } from './HeroPortrait';
 
@@ -13,7 +14,7 @@ export function Hero() {
       <div className="container">
         <div className="hero-inner">
           <div className="hero-copy">
-            <p className="hero-kicker">
+            <div className="hero-kicker">
               <span className="availability">
                 <span className="status-dot" aria-hidden="true" />
                 {profile.availability}
@@ -22,7 +23,8 @@ export function Hero() {
                 <Icon name="pin" size={15} />
                 {profile.location}
               </span>
-            </p>
+              <ProfileViews />
+            </div>
             {/* Each word slides up in turn; the heading still reads as one name. */}
             <h1 id="hero-name" className="hero-name">
               {profile.name.split(' ').map((word, i) => (

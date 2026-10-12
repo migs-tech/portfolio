@@ -1,7 +1,6 @@
 import { navItems, profile, socialLinks } from '../../content/profile';
 import { openPalette, paletteShortcut } from '../../lib/palette';
 import { Icon } from '../ui/Icon';
-import { VisitorCount } from '../ui/VisitorCount';
 import { Brand } from './Brand';
 
 export function Footer() {
@@ -15,7 +14,6 @@ export function Footer() {
           <p className="footer-tagline">
             {profile.role} · {profile.location}
           </p>
-          <VisitorCount />
         </div>
 
         <nav className="footer-col" aria-label="Footer">

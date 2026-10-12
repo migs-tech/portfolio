@@ -7,7 +7,7 @@ import { canTiltWithDevice, enableDeviceTilt } from '../../lib/deviceTilt';
 import { paletteShortcut } from '../../lib/palette';
 import { ping } from '../../lib/ping';
 import { downloadResume, openResume } from '../../lib/resume';
-import { fetchVisitors } from '../../lib/visits';
+import { refreshViews } from '../../lib/views';
 import { toggleTheme } from '../../lib/theme';
 import { Icon } from './Icon';
 
@@ -125,12 +125,15 @@ function buildCommands() {
             return up ? `✔ ${displayUrl(live(p).url)}  ${ms} ms` : `✕ ${displayUrl(live(p).url)}  no response`;
           }),
         ) },
-    { id: 'visitors', group: 'Terminal', label: 'visitors', mono: true, terminal: true, keywords: 'count stats analytics views',
+    { id: 'views', group: 'Terminal', label: 'views', mono: true, terminal: true, keywords: 'profile views visitors count stats analytics',
       run: async () => {
-        const total = await fetchVisitors({ count: false });
-        return total === null
-          ? ['The visitor counter isn’t available right now.']
-          : [`${total.toLocaleString('en-US')} ${total === 1 ? 'visitor' : 'visitors'} so far`, 'Counted anonymously: no names, no tracking.'];
+        const stats = await refreshViews();
+        if (!stats) return ['The view counter isn’t available right now.'];
+        const n = (value) => value.toLocaleString('en-US');
+        return [
+          `${n(stats.views)} profile views · ${n(stats.visitors)} unique visitors · ${n(stats.days.at(-1)?.views ?? 0)} today`,
+          'Counted anonymously: no names, no tracking.',
+        ];
       } },
     { id: 'lp', group: 'Terminal', label: 'lp resume.pdf', mono: true, keywords: 'print cv',
       lines: ['request id is felix-1 (1 file)', '→ Printing…'],
