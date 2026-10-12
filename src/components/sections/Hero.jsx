@@ -7,7 +7,7 @@ import { HeroPortrait } from './HeroPortrait';
 
 export function Hero() {
   return (
-    <section id="home" className="hero" aria-labelledby="hero-name" data-pointer>
+    <section id="home" className="hero" aria-labelledby="hero-name" data-pointer=".hero-spot">
       <div className="hero-bg" aria-hidden="true" />
       <div className="hero-spot" aria-hidden="true" />
       <div className="container">

@@ -402,6 +402,7 @@ main:focus {
 
 /* ---------- Status ---------- */
 .status-dot {
+  position: relative;
   display: inline-block;
   flex: none;
   width: 7px;
@@ -410,19 +411,29 @@ main:focus {
   background: var(--ok);
 }
 
+/* The "live" ping: a copy of the dot that grows and fades. Only transform and
+   opacity change, so it runs on the graphics chip without repainting; it pauses
+   while its section is off screen (hooks/usePauseOffscreen.js). */
 @media (prefers-reduced-motion: no-preference) {
-  .status-dot {
-    animation: pulse 2.4s ease-in-out infinite;
+  .status-dot::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: inherit;
+    animation: ping 2.4s ease-out infinite;
   }
 }
 
-@keyframes pulse {
-  0%,
-  100% {
-    box-shadow: 0 0 0 0 color-mix(in srgb, var(--ok) 45%, transparent);
+@keyframes ping {
+  0% {
+    opacity: 0.5;
+    transform: scale(1);
   }
-  50% {
-    box-shadow: 0 0 0 5px transparent;
+  70%,
+  100% {
+    opacity: 0;
+    transform: scale(2.6);
   }
 }
 

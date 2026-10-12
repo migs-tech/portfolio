@@ -325,7 +325,11 @@ kbd {
 
 .ping-badge.is-down .status-dot {
   background: var(--ink-3);
+}
+
+.ping-badge.is-down .status-dot::after {
   animation: none;
+  opacity: 0;
 }
 
 /* ---------- Résumé button: saving → saved ---------- */
@@ -2163,9 +2167,21 @@ a.fit-evidence:hover {
 }
 
 .ps-steps li.is-current .ps-dot {
+  position: relative;
   border-color: var(--accent);
   color: var(--accent);
-  animation: ring-pulse 1.6s ease-in-out infinite;
+}
+
+/* The current step's ring pulses outward (transform and opacity only). */
+@media (prefers-reduced-motion: no-preference) {
+  .ps-steps li.is-current .ps-dot::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border: 2px solid var(--accent);
+    border-radius: 50%;
+    animation: ring-pulse 1.6s ease-out infinite;
+  }
 }
 
 .ps-step-label {
@@ -2655,12 +2671,14 @@ a.fit-evidence:hover {
 }
 
 @keyframes ring-pulse {
-  0%,
-  100% {
-    box-shadow: 0 0 0 0 var(--accent-soft);
+  0% {
+    opacity: 0.6;
+    transform: scale(1);
   }
-  50% {
-    box-shadow: 0 0 0 6px var(--accent-soft);
+  80%,
+  100% {
+    opacity: 0;
+    transform: scale(1.55);
   }
 }
 
@@ -2712,9 +2730,10 @@ a.fit-evidence:hover {
   }
 }
 
+/* Opacity only: scaling an SVG shape makes the browser lay out the whole map,
+   labels included, on every frame. */
 @keyframes halo {
   50% {
-    opacity: 0.45;
-    transform: scale(1.15);
+    opacity: 0.3;
   }
 }

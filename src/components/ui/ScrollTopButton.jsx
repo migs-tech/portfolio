@@ -10,22 +10,37 @@ export function ScrollTopButton() {
   useEffect(() => {
     const el = ref.current;
     let frame = 0;
+    // The page height is measured only when it changes, not on every scroll
+    // frame (reading it mid-scroll can force a fresh layout).
+    let max = 0;
+    let threshold = 0;
+    const measure = () => {
+      max = document.documentElement.scrollHeight - window.innerHeight;
+      threshold = window.innerHeight * 0.8;
+    };
     const update = () => {
       frame = 0;
-      const max = document.documentElement.scrollHeight - window.innerHeight;
-      el.style.setProperty('--progress', max > 0 ? (window.scrollY / max).toFixed(4) : '0');
-      el.classList.toggle('is-visible', window.scrollY > window.innerHeight * 0.8);
+      el.style.setProperty('--progress', max > 0 ? Math.min(window.scrollY / max, 1).toFixed(4) : '0');
+      el.classList.toggle('is-visible', window.scrollY > threshold);
     };
     const schedule = () => {
       if (!frame) frame = requestAnimationFrame(update);
     };
+    const remeasure = () => {
+      measure();
+      schedule();
+    };
+    measure();
     update();
+    const resize = 'ResizeObserver' in window ? new ResizeObserver(remeasure) : null;
+    resize?.observe(document.body);
     window.addEventListener('scroll', schedule, { passive: true });
-    window.addEventListener('resize', schedule);
+    window.addEventListener('resize', remeasure);
     return () => {
       cancelAnimationFrame(frame);
+      resize?.disconnect();
       window.removeEventListener('scroll', schedule);
-      window.removeEventListener('resize', schedule);
+      window.removeEventListener('resize', remeasure);
     };
   }, []);
 

@@ -762,8 +762,7 @@
   margin-inline: calc(clamp(20px, 4vw, 44px) * -1);
   padding: 12px clamp(20px, 4vw, 44px);
   border-bottom: 1px solid var(--line);
-  background: color-mix(in srgb, var(--bg) 90%, transparent);
-  backdrop-filter: blur(8px);
+  background: color-mix(in srgb, var(--bg) 96%, transparent);
 }
 
 .pd-kicker,

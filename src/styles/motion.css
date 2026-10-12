@@ -61,19 +61,43 @@
   }
 }
 
+/* A 440px glow that slides to the cursor (--mx / --my, set on this element by
+   usePointerEffects). Only transforms change, so the graphics chip moves it
+   without repainting anything. */
 .hero-spot {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 440px;
+  height: 440px;
+  -webkit-mask-image: radial-gradient(closest-side, #000, transparent 70%);
+  mask-image: radial-gradient(closest-side, #000, transparent 70%);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(calc(var(--mx, -500px) - 220px), calc(var(--my, -500px) - 220px));
+  transition: opacity 0.5s var(--ease);
+  will-change: transform;
+}
+
+/* The lit grid inside is shifted back as the glow moves, by the remainder of
+   one 40px cell, so its lines stay on top of the hero's own grid. */
+.hero-spot::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 480px;
+  height: 480px;
   background-image:
     linear-gradient(color-mix(in srgb, var(--accent) 30%, transparent) 1px, transparent 1px),
     linear-gradient(90deg, color-mix(in srgb, var(--accent) 30%, transparent) 1px, transparent 1px);
   background-size: 40px 40px;
   background-position: -1px -1px;
-  -webkit-mask-image: radial-gradient(220px circle at var(--mx, 50%) var(--my, 50%), #000, transparent 70%);
-  mask-image: radial-gradient(220px circle at var(--mx, 50%) var(--my, 50%), #000, transparent 70%);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.5s var(--ease);
+  transform: translate(
+    calc(mod(220px - var(--mx, 0px), 40px) - 40px),
+    calc(mod(220px - var(--my, 0px), 40px) - 40px)
+  );
+  will-change: transform;
 }
 
 /* ---------- 3D tilt and glare (mouse and trackpad) ---------- */
@@ -170,11 +194,6 @@
   /* Hero photo: one small turn after load hints that it flips (until the first flip). */
   .flip:not(.was-flipped) {
     animation: peek 1.2s var(--ease) 2.8s;
-  }
-
-  /* Slow drift of the hero's accent glow. */
-  .hero::before {
-    animation: drift 18s ease-in-out infinite alternate;
   }
 
   /* Evaluation bars fill once the results panel is in view. */
@@ -406,12 +425,6 @@
   }
 }
 
-@keyframes drift {
-  to {
-    transform: translate(-90px, 70px) scale(1.12);
-  }
-}
-
 @keyframes fade-in {
   from {
     opacity: 0;
@@ -554,6 +567,14 @@
     opacity: 0;
     transform: translateY(8px) scale(0.85);
   }
+}
+
+/* ---------- Off-screen sections rest ---------- */
+/* Sections out of view pause their endless animations (hooks/usePauseOffscreen.js). */
+[data-offscreen] .status-dot::after,
+[data-offscreen] .ps-dot::after,
+[data-offscreen] .sm-halo {
+  animation-play-state: paused !important; /* over the animation shorthands' "running" */
 }
 
 /* ---------- Reduced motion: a final safety net ---------- */

@@ -65,9 +65,9 @@
   top: 0;
   z-index: 50;
   height: var(--header-h);
-  background: color-mix(in srgb, var(--bg) 82%, transparent);
-  backdrop-filter: saturate(1.5) blur(12px);
-  -webkit-backdrop-filter: saturate(1.5) blur(12px);
+  /* Nearly solid instead of a frosted blur: a backdrop blur is recomputed on
+     every scroll frame, which drops frames on integrated graphics. */
+  background: color-mix(in srgb, var(--bg) 95%, transparent);
   border-bottom: 1px solid transparent;
   transition: border-color 0.25s var(--ease);
 }

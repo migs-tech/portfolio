@@ -3,6 +3,9 @@ import { useEffect } from 'react';
 // Cursor-driven effects for mouse and trackpad users, with one shared listener:
 // - [data-pointer]: gets --mx / --my (pointer position in px from the element's
 //   top-left), used for glows that follow the cursor. Nested elements all update.
+//   data-pointer=".child" puts the values on that child instead: custom
+//   properties are inherited, so changing them on a big element makes the
+//   browser restyle everything inside it on every mouse move.
 // - [data-tilt]: gets --rx / --ry (a few degrees of 3D tilt toward the pointer)
 //   and --gx / --gy (glare position, in %).
 // Does nothing on touch screens or when the visitor prefers reduced motion.
@@ -28,8 +31,9 @@ export function usePointerEffects() {
 
         for (let el = target?.closest('[data-pointer]'); el; el = el.parentElement?.closest('[data-pointer]')) {
           const box = el.getBoundingClientRect();
-          el.style.setProperty('--mx', `${event.clientX - box.left}px`);
-          el.style.setProperty('--my', `${event.clientY - box.top}px`);
+          const host = (el.dataset.pointer && el.querySelector(el.dataset.pointer)) || el;
+          host.style.setProperty('--mx', `${event.clientX - box.left}px`);
+          host.style.setProperty('--my', `${event.clientY - box.top}px`);
         }
 
         const tilt = target?.closest('[data-tilt]') ?? null;

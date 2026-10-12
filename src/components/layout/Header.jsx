@@ -17,7 +17,12 @@ export function Header() {
   const listRef = useRef(null);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
+    // Only tell React when the answer changes, not on every scroll event.
+    let last = null;
+    const onScroll = () => {
+      const now = window.scrollY > 8;
+      if (now !== last) setScrolled((last = now));
+    };
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);

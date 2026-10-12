@@ -12,11 +12,13 @@ import { Skills } from './components/sections/Skills';
 import { CommandPalette } from './components/ui/CommandPalette';
 import { CursorFollower } from './components/ui/CursorFollower';
 import { ScrollTopButton } from './components/ui/ScrollTopButton';
+import { usePauseOffscreen } from './hooks/usePauseOffscreen';
 import { usePointerEffects } from './hooks/usePointerEffects';
 import { canTiltWithDevice, enableDeviceTilt, tiltNeedsPermission } from './lib/deviceTilt';
 
 export default function App() {
   usePointerEffects();
+  usePauseOffscreen();
 
   // Phone tilt starts by itself where no permission is needed (Android);
   // iPhones turn it on from the command palette.
