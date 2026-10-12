@@ -4,3 +4,6 @@
 source-images/
 node_modules/
 dist/
+
+# Local settings; the deployed site gets them from the Vercel project settings instead.
+.env
