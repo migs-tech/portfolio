@@ -1,0 +1,14 @@
+{
+  "name": "Felix Miguel M. Atenin — Portfolio",
+  "short_name": "Felix Atenin",
+  "description": "IT Support & Web Developer from Tandag City, Philippines.",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#f7f6f2",
+  "theme_color": "#14161a",
+  "icons": [
+    { "src": "/favicon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/favicon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

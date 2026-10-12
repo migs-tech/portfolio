@@ -1,0 +1,532 @@
+/* ==========================================================================
+   Motion and pointer interactions.
+   Every effect here is an enhancement: with reduced motion, a touch screen or
+   an older browser the page is complete, just still. Pointer positions
+   (--mx, --my, --rx, --ry, --gx, --gy) come from hooks/usePointerEffects.js.
+   ========================================================================== */
+
+/* ---------- Cursor spotlight on cards (mouse and trackpad) ---------- */
+/* A soft glow and a lit border follow the cursor across .spotlight cards. */
+@media (hover: hover) and (pointer: fine) {
+  .spotlight {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .spotlight::before,
+  .spotlight::after {
+    content: '';
+    position: absolute;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.35s var(--ease);
+  }
+
+  /* Fill, painted under the card's content. */
+  .spotlight::before {
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(
+      420px circle at var(--mx, 50%) var(--my, 50%),
+      color-mix(in srgb, var(--accent) 8%, transparent),
+      transparent 70%
+    );
+  }
+
+  /* Border: a 1px ring laid over the card's own border. */
+  .spotlight::after {
+    inset: -1px;
+    padding: 1px;
+    background: radial-gradient(
+      260px circle at var(--mx, 50%) var(--my, 50%),
+      color-mix(in srgb, var(--accent) 75%, transparent),
+      transparent 70%
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+
+  .spotlight:hover::before,
+  .spotlight:hover::after {
+    opacity: 1;
+  }
+
+  /* The hero grid lights up around the cursor. */
+  .hero:hover .hero-spot {
+    opacity: 1;
+  }
+}
+
+.hero-spot {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--accent) 30%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--accent) 30%, transparent) 1px, transparent 1px);
+  background-size: 40px 40px;
+  background-position: -1px -1px;
+  -webkit-mask-image: radial-gradient(220px circle at var(--mx, 50%) var(--my, 50%), #000, transparent 70%);
+  mask-image: radial-gradient(220px circle at var(--mx, 50%) var(--my, 50%), #000, transparent 70%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s var(--ease);
+}
+
+/* ---------- 3D tilt and glare (mouse and trackpad) ---------- */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .portrait-card[data-tilt] {
+    transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+    transition: transform 0.6s var(--ease);
+  }
+
+  /* The pointer position is read from the flat button; the frame inside tilts. */
+  .showcase-media[data-tilt] .media-frame {
+    transform: perspective(1200px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--lift, 0px));
+  }
+
+  .showcase-media[data-tilt]:hover {
+    --lift: -4px;
+  }
+
+  /* Follow the pointer closely while it moves; ease back slowly when it leaves. */
+  .portrait-card[data-tilt][data-tilting],
+  [data-tilt][data-tilting] .media-frame {
+    transition-duration: 0.15s;
+  }
+
+  .glare {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at var(--gx, 50%) var(--gy, 50%), rgba(255, 255, 255, 0.22), transparent 55%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s var(--ease);
+  }
+
+  .showcase-media:hover .glare {
+    opacity: 1;
+  }
+}
+
+/* ---------- Entrance animations ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  /* Lists reveal one item after another (--i is the item's position). */
+  .reveal {
+    transition-delay: calc(var(--i, 0) * 90ms);
+  }
+
+  .reveal.skill-card {
+    transition-property: opacity, transform, border-color, box-shadow;
+    transition-duration: 0.7s, 0.7s, 0.2s, 0.2s;
+    transition-delay: calc(var(--i, 0) * 90ms), calc(var(--i, 0) * 90ms), 0s, 0s;
+  }
+
+  .reveal .highlights li {
+    opacity: 0;
+    transform: translateX(-10px);
+    transition:
+      opacity 0.5s var(--ease),
+      transform 0.5s var(--ease);
+    transition-delay: calc(250ms + var(--i, 0) * 90ms);
+  }
+
+  .reveal.is-visible .highlights li {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Section labels: the short rule draws in after the heading appears. */
+  .section-head .eyebrow-rule {
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.8s var(--ease) 0.25s;
+  }
+
+  .section-head.is-visible .eyebrow-rule {
+    transform: none;
+  }
+
+  /* Hero name: words rise in one after another. */
+  .hero-copy > .hero-name {
+    animation: none;
+  }
+
+  .hero-name .word {
+    display: inline-block;
+    animation: word-in 0.8s var(--ease) both;
+    animation-delay: calc(0.08s + var(--i, 0) * 0.08s);
+  }
+
+  /* Rotating role: each new word slides up into place. */
+  .rotator-word {
+    display: inline-block;
+    animation: word-in 0.5s var(--ease) both;
+  }
+
+  /* Hero photo: one small turn after load hints that it flips (until the first flip). */
+  .flip:not(.was-flipped) {
+    animation: peek 1.2s var(--ease) 2.8s;
+  }
+
+  /* Slow drift of the hero's accent glow. */
+  .hero::before {
+    animation: drift 18s ease-in-out infinite alternate;
+  }
+
+  /* Evaluation bars fill once the results panel is in view. */
+  .results .score-bar span {
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 1.1s var(--ease);
+    transition-delay: calc(0.25s + var(--i, 0) * 0.1s);
+  }
+
+  .results.is-visible .score-bar span {
+    transform: none;
+  }
+
+  /* Dialogs. */
+  .project-dialog[open]::backdrop,
+  .lightbox[open]::backdrop {
+    animation: fade-in 0.3s ease both;
+  }
+
+  .lightbox-figure {
+    animation: zoom-in 0.35s var(--ease) both;
+  }
+
+  /* Header: the current-section highlight slides between links. */
+  .nav-list::before {
+    transition:
+      transform 0.4s var(--ease),
+      width 0.4s var(--ease),
+      opacity 0.25s var(--ease);
+  }
+
+  /* Arrow icons nudge in the direction they point. */
+  .btn .icon,
+  .text-link .icon,
+  .to-top .icon {
+    transition: transform 0.25s var(--ease);
+  }
+
+  .btn:hover .icon-arrowRight,
+  .text-link:hover .icon-arrowRight {
+    transform: translateX(3px);
+  }
+
+  .btn:hover .icon-arrowDown,
+  .btn:hover .icon-download {
+    transform: translateY(2px);
+  }
+
+  .btn:hover .icon-external {
+    transform: translate(2px, -2px);
+  }
+
+  .btn:hover .icon-file {
+    transform: translateY(-2px) rotate(-6deg);
+  }
+
+  /* Résumé viewer (components/resume/ResumeViewer.jsx): the sheet comes out of
+     the slot, each block inks in as the print head passes it (--d), then the
+     stamp lands (--stamp-at) and the sheet takes the hit. */
+  .resume-dialog[open]::backdrop {
+    animation: fade-in 0.3s ease both;
+  }
+
+  .resume-dialog[open] .rv-bar {
+    animation: rv-bar-in 0.4s var(--ease) both;
+  }
+
+  .rv[data-animate] .rv-paper {
+    animation:
+      rv-feed 0.45s cubic-bezier(0.2, 0.8, 0.3, 1) both,
+      rv-thud 0.35s ease-out calc(var(--stamp-at, 1.6s) + 160ms);
+  }
+
+  .rv[data-animate] [data-ink] {
+    animation: rv-ink 0.6s var(--ease) both;
+    animation-delay: var(--d, 0ms);
+  }
+
+  .rv[data-animate] .rv-stamp {
+    animation: rv-stamp 0.55s cubic-bezier(0.3, 0.7, 0.4, 1) both;
+    animation-delay: var(--stamp-at, 1.6s);
+  }
+
+  .rv.is-printing .rv-led {
+    animation: rv-blink 0.9s ease-in-out infinite;
+  }
+
+  .rv.is-ready .rv-progress {
+    transition: transform 0.2s linear;
+  }
+
+  .rv-tabs ul::before {
+    transition:
+      transform 0.35s var(--ease),
+      width 0.35s var(--ease);
+  }
+
+  /* A tab jump swipes a highlighter over the section's heading. */
+  .rv-section.is-flash .rv-h span {
+    animation: rv-marker 1.3s var(--ease);
+  }
+
+  /* Closing: the sheet lifts away as everything fades. */
+  .resume-dialog.is-closing,
+  .resume-dialog.is-closing::backdrop {
+    animation: rv-fade-out 0.24s ease forwards;
+  }
+
+  .resume-dialog.is-closing .rv-paper {
+    animation: rv-lift 0.24s cubic-bezier(0.4, 0, 1, 1) forwards;
+  }
+
+  .text-link:hover .icon-arrowUp,
+  .to-top:hover .icon-arrowUp {
+    transform: translateY(-2px);
+  }
+}
+
+/* Phones: the case study slides up like a sheet, and menu links cascade in. */
+@media (prefers-reduced-motion: no-preference) and (max-width: 640px) {
+  .project-dialog[open] {
+    animation: sheet-up 0.45s var(--ease) both;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) and (max-width: 900px) {
+  .nav-list > li {
+    opacity: 0;
+    transform: translateY(-6px);
+    transition:
+      opacity 0.3s var(--ease),
+      transform 0.3s var(--ease);
+  }
+
+  .site-header.is-open .nav-list > li {
+    opacity: 1;
+    transform: none;
+    transition-delay: calc(0.05s + var(--i, 0) * 0.04s);
+  }
+}
+
+/* ---------- Scroll-linked effects (browsers with scroll timelines) ---------- */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    /* Project screenshots drift slightly inside their frames as the row scrolls past. */
+    .showcase-item {
+      view-timeline-name: --project;
+    }
+
+    .showcase-media img {
+      animation: parallax linear both;
+      animation-timeline: --project;
+      animation-range: cover;
+    }
+
+    /* The work timeline's line draws down as it comes into view. */
+    .timeline {
+      view-timeline-name: --timeline;
+    }
+
+    .timeline::before {
+      transform-origin: top;
+      animation: grow-down linear both;
+      animation-timeline: --timeline;
+      animation-range: entry 10% cover 50%;
+    }
+
+    /* Résumé skill chips pop up as they scroll into view on the sheet. */
+    .rv-chip {
+      animation: rv-chip linear both;
+      animation-timeline: view();
+      animation-range: entry 10% entry 90%;
+    }
+  }
+}
+
+/* ---------- View transitions ---------- */
+/* Theme switch: the circular reveal is animated from lib/theme.js. */
+:root[data-vt='theme']::view-transition-old(root),
+:root[data-vt='theme']::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* Card ↔ case study: the screenshot grows into place (lib/morph.js). */
+:root[data-vt='morph']::view-transition-group(morph) {
+  animation-duration: 0.55s;
+  animation-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+:root[data-vt='morph']::view-transition-old(morph),
+:root[data-vt='morph']::view-transition-new(morph) {
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ---------- Keyframes ---------- */
+@keyframes word-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.4em);
+    filter: blur(6px);
+  }
+}
+
+/* A slanted half-turn toward the top-right corner, hinting that the card turns
+   over in whichever direction it is clicked. */
+@keyframes peek {
+  40% {
+    transform: rotate3d(1, 1, 0, 30deg);
+  }
+}
+
+@keyframes drift {
+  to {
+    transform: translate(-90px, 70px) scale(1.12);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes zoom-in {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+}
+
+@keyframes sheet-up {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes parallax {
+  from {
+    transform: scale(1.04) translateY(-1.5%);
+  }
+  to {
+    transform: scale(1.04) translateY(1.5%);
+  }
+}
+
+@keyframes grow-down {
+  from {
+    transform: scaleY(0);
+  }
+}
+
+@keyframes rv-bar-in {
+  from {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+}
+
+@keyframes rv-feed {
+  from {
+    opacity: 0;
+    transform: translateY(-64px) rotateX(14deg);
+  }
+}
+
+@keyframes rv-thud {
+  35% {
+    transform: translateY(3px) scale(0.997);
+  }
+}
+
+@keyframes rv-ink {
+  from {
+    opacity: 0.08;
+    filter: blur(4px);
+    transform: translateY(4px);
+  }
+}
+
+@keyframes rv-stamp {
+  0% {
+    opacity: 0;
+    transform: rotate(-18deg) scale(2.3);
+  }
+  55% {
+    opacity: 1;
+    transform: rotate(-7deg) scale(0.9);
+  }
+  78% {
+    transform: rotate(-7deg) scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: rotate(-7deg);
+  }
+}
+
+@keyframes rv-blink {
+  50% {
+    opacity: 0.3;
+  }
+}
+
+@keyframes rv-marker {
+  0% {
+    background-size: 0% 100%;
+  }
+  30% {
+    background-position: left;
+    background-size: 100% 100%;
+  }
+  70% {
+    background-position: right;
+    background-size: 100% 100%;
+  }
+  100% {
+    background-position: right;
+    background-size: 0% 100%;
+  }
+}
+
+@keyframes rv-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes rv-lift {
+  to {
+    opacity: 0;
+    transform: translateY(-48px) scale(0.98);
+  }
+}
+
+@keyframes rv-chip {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.85);
+  }
+}
+
+/* ---------- Reduced motion: a final safety net ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

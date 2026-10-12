@@ -1,0 +1,6 @@
+# Files Vercel should never upload when deploying.
+# source-images/ holds raw originals (unblurred certificates, screenshots with
+# browser bars); the site only uses the processed copies in src/assets/images.
+source-images/
+node_modules/
+dist/

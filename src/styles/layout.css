@@ -1,0 +1,542 @@
+/* ---------- Container & sections ---------- */
+.container {
+  width: 100%;
+  max-width: calc(var(--container) + var(--gutter) * 2);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* --section-bg lets parts inside a section match its background (e.g. timeline dots). */
+.section {
+  --section-bg: var(--bg);
+  padding-block: clamp(64px, 9vw, 112px);
+}
+
+.section-alt {
+  --section-bg: var(--bg-alt);
+  background: var(--bg-alt);
+  border-block: 1px solid var(--line);
+}
+
+.section-head {
+  max-width: 760px;
+  margin-bottom: clamp(32px, 5vw, 52px);
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
+  color: var(--ink-3);
+  text-transform: uppercase;
+}
+
+.eyebrow-index {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.eyebrow-rule {
+  width: 28px;
+  height: 1px;
+  background: var(--line-strong);
+}
+
+.section-title {
+  font-size: var(--step-3);
+  font-weight: 650;
+  letter-spacing: -0.03em;
+}
+
+.section-intro {
+  margin-top: 14px;
+  font-size: var(--step-1);
+  color: var(--ink-2);
+  max-width: 62ch;
+}
+
+/* ---------- Header ---------- */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  height: var(--header-h);
+  background: color-mix(in srgb, var(--bg) 82%, transparent);
+  backdrop-filter: saturate(1.5) blur(12px);
+  -webkit-backdrop-filter: saturate(1.5) blur(12px);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.25s var(--ease);
+}
+
+.site-header.is-scrolled,
+.site-header.is-open {
+  border-bottom-color: var(--line);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  height: 100%;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.brand:hover {
+  color: var(--ink);
+}
+
+/* ---------- Logo: FA monogram that turns over to the round photo ---------- */
+.monogram {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.monogram-bg {
+  fill: var(--ink);
+}
+
+.monogram-fg {
+  fill: var(--bg);
+}
+
+.monogram-accent {
+  fill: var(--mark-accent);
+}
+
+.brand-badge {
+  position: relative;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  perspective: 300px;
+}
+
+.brand-face {
+  position: absolute;
+  inset: 0;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transition: transform 0.6s var(--ease);
+}
+
+.brand-back {
+  transform: rotateY(180deg);
+}
+
+.brand:hover .brand-front,
+.brand:focus-visible .brand-front {
+  transform: rotateY(-180deg);
+}
+
+.brand:hover .brand-back,
+.brand:focus-visible .brand-back {
+  transform: none;
+}
+
+/* ---------- Avatar: round photo, green ring when open to work ---------- */
+.avatar {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  width: var(--size);
+  height: var(--size);
+  padding: 2px;
+  border-radius: 50%;
+  background: var(--line-strong);
+}
+
+.avatar.has-status {
+  background: var(--ok);
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  border: 2px solid var(--avatar-gap, var(--bg));
+  border-radius: 50%;
+  background: var(--surface-2);
+  object-fit: cover;
+}
+
+.avatar-status {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 26%;
+  height: 26%;
+  border: 2px solid var(--avatar-gap, var(--bg));
+  border-radius: 50%;
+  background: var(--ok);
+}
+
+.brand-back .avatar {
+  padding: 0;
+}
+
+.brand-back .avatar img {
+  border: 0;
+}
+
+.nav-list {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+/* Highlight that slides to the current section's link (positioned by Header.jsx). */
+.nav-list::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: var(--pill-w, 0px);
+  height: 36px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--ink) 7%, transparent);
+  opacity: 0;
+  transform: translate(var(--pill-x, 0px), -50%);
+  transition: opacity 0.25s var(--ease);
+}
+
+.nav-list[data-has-active]::before {
+  opacity: 1;
+}
+
+.nav-link {
+  position: relative;
+  display: block;
+  padding: 7px 12px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: var(--ink-2);
+  text-decoration: none;
+  transition:
+    color 0.2s var(--ease),
+    background-color 0.2s var(--ease);
+}
+
+.nav-link:hover {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--ink) 5%, transparent);
+}
+
+.nav-link[aria-current='true'] {
+  color: var(--ink);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.menu-toggle {
+  display: none;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin-right: -10px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+}
+
+/* Three lines that fold into an X when the menu opens. */
+.burger {
+  position: relative;
+  display: block;
+  width: 20px;
+  height: 14px;
+}
+
+.burger span {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 1.75px;
+  border-radius: 2px;
+  background: currentColor;
+  transition:
+    top 0.3s var(--ease),
+    transform 0.3s var(--ease),
+    opacity 0.2s var(--ease);
+}
+
+.burger span:nth-child(1) {
+  top: 0;
+}
+
+.burger span:nth-child(2) {
+  top: 6px;
+}
+
+.burger span:nth-child(3) {
+  top: 12px;
+}
+
+.site-header.is-open .burger span:nth-child(1) {
+  top: 6px;
+  transform: rotate(45deg);
+}
+
+.site-header.is-open .burger span:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0.4);
+}
+
+.site-header.is-open .burger span:nth-child(3) {
+  top: 6px;
+  transform: rotate(-45deg);
+}
+
+.nav-resume-mobile {
+  display: none;
+}
+
+@media (max-width: 1080px) {
+  .nav-link {
+    padding-inline: 9px;
+  }
+}
+
+@media (max-width: 900px) {
+  .menu-toggle {
+    display: inline-grid;
+  }
+
+  .header-resume {
+    display: none;
+  }
+
+  .nav {
+    position: fixed;
+    inset: var(--header-h) 0 auto 0;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+    box-shadow: var(--shadow);
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(-8px);
+    transition:
+      opacity 0.2s var(--ease),
+      transform 0.2s var(--ease),
+      visibility 0s linear 0.2s;
+  }
+
+  .site-header.is-open .nav {
+    visibility: visible;
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 0.2s var(--ease),
+      transform 0.2s var(--ease);
+  }
+
+  /* [role] matches the base list reset's specificity, so this padding wins. */
+  .nav-list[role='list'] {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    max-width: calc(var(--container) + var(--gutter) * 2);
+    margin-inline: auto;
+    padding: 8px var(--gutter) 24px;
+  }
+
+  .nav-link,
+  .nav-link:hover,
+  .nav-link[aria-current='true'] {
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+    border-radius: 0;
+    background: none;
+    font-size: 1.05rem;
+  }
+
+  .nav-link[aria-current='true'] {
+    color: var(--accent);
+  }
+
+  .nav-list::before {
+    display: none;
+  }
+
+  .nav-resume-mobile {
+    display: block;
+    padding-top: 20px;
+  }
+
+  .nav-resume-mobile .btn {
+    width: 100%;
+  }
+}
+
+/* Very narrow phones: keep the monogram, hide the name visually (still read out). */
+@media (max-width: 359px) {
+  .site-header .brand-name {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+}
+
+/* ---------- Back to top ---------- */
+.to-top {
+  position: fixed;
+  right: max(16px, env(safe-area-inset-right));
+  bottom: max(16px, env(safe-area-inset-bottom));
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  box-shadow: var(--shadow);
+  color: var(--ink);
+  backdrop-filter: blur(8px);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(12px) scale(0.9);
+  transition:
+    opacity 0.3s var(--ease),
+    transform 0.3s var(--ease),
+    visibility 0s linear 0.3s;
+}
+
+.to-top.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition:
+    opacity 0.3s var(--ease),
+    transform 0.3s var(--ease);
+}
+
+.to-top:hover {
+  color: var(--accent);
+}
+
+.to-top > .icon {
+  grid-area: 1 / 1;
+}
+
+.to-top-ring {
+  grid-area: 1 / 1;
+  width: 48px;
+  height: 48px;
+  fill: none;
+  stroke-width: 2;
+  transform: rotate(-90deg);
+}
+
+.to-top-ring circle {
+  stroke: var(--line);
+}
+
+.to-top-ring .to-top-progress {
+  stroke: var(--accent);
+  stroke-dasharray: 1;
+  stroke-dashoffset: calc(1 - var(--progress, 0));
+  stroke-linecap: round;
+}
+
+@media (max-width: 640px) {
+  .to-top,
+  .to-top-ring {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+/* ---------- Footer ---------- */
+.site-footer {
+  border-top: 1px solid var(--line);
+  padding-block: 56px 28px;
+  font-size: 0.9rem;
+  color: var(--ink-2);
+}
+
+.footer-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1.8fr) repeat(2, minmax(0, 1fr));
+  gap: 32px;
+}
+
+.footer-tagline {
+  margin-top: 14px;
+  max-width: 40ch;
+  color: var(--ink-3);
+}
+
+.footer-heading {
+  margin-bottom: 12px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.footer-links {
+  display: grid;
+  gap: 8px;
+}
+
+.footer-links a {
+  color: var(--ink-2);
+  text-decoration: none;
+}
+
+.footer-links a:hover {
+  color: var(--accent);
+}
+
+/* The rule sits inside the container's padding, so it lines up with the content. */
+.footer-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+  margin-top: 44px;
+  padding-top: 22px;
+  background: linear-gradient(var(--line), var(--line)) no-repeat center top / calc(100% - var(--gutter) * 2) 1px;
+}
+
+.footer-copy {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--ink-3);
+}
+
+@media (max-width: 700px) {
+  .footer-inner {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .footer-id {
+    grid-column: 1 / -1;
+  }
+}
