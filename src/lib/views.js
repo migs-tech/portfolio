@@ -32,8 +32,11 @@ async function request(method, body) {
       headers: { Accept: 'application/json', ...(body ? { 'Content-Type': 'application/json' } : {}) },
       body: body ? JSON.stringify(body) : undefined,
     });
+    // Always read the reply, even an error, so the request finishes; an unread
+    // body keeps it open and the page never counts as fully loaded.
+    const text = await response.text();
     if (!response.ok || !response.headers.get('content-type')?.includes('application/json')) return null;
-    const stats = await response.json();
+    const stats = JSON.parse(text);
     return Number.isFinite(stats?.views) && Array.isArray(stats.days) ? stats : null;
   } catch {
     return null;

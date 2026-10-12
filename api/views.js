@@ -23,6 +23,9 @@ const KEEP_DAY = 40 * 24 * 60 * 60;
 const TIME_ZONE = 'Asia/Manila'; // "today" is a Philippine day
 
 const json = (body, status = 200) => Response.json(body, { status, headers: { 'Cache-Control': 'no-store' } });
+// Before the database is connected there's simply nothing to show: an empty
+// reply (not an error), so the chip stays hidden without browser console errors.
+const notSetUp = () => new Response(null, { status: 204, headers: { 'Cache-Control': 'no-store' } });
 
 // Several commands in one request, using Upstash's REST pipeline.
 async function redis(...commands) {
@@ -65,7 +68,7 @@ async function stats(updates = []) {
 
 // Read the numbers.
 export async function GET() {
-  if (!REDIS_URL || !REDIS_TOKEN) return json({ error: 'The counter is not set up.' }, 503);
+  if (!REDIS_URL || !REDIS_TOKEN) return notSetUp();
   try {
     return json(await stats());
   } catch {
@@ -76,7 +79,7 @@ export async function GET() {
 // Count a view (and, on a browser's first visit, a visitor), then return the numbers.
 // Body: { "firstVisit": true | false }.
 export async function POST(request) {
-  if (!REDIS_URL || !REDIS_TOKEN) return json({ error: 'The counter is not set up.' }, 503);
+  if (!REDIS_URL || !REDIS_TOKEN) return notSetUp();
   const origin = request.headers.get('origin');
   if (origin && new URL(origin).host !== new URL(request.url).host) return json({ error: 'Forbidden' }, 403);
 
