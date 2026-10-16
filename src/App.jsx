@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Footer } from './components/layout/Footer';
 import { Header } from './components/layout/Header';
+import { ProjectBrief } from './components/inquiry/ProjectBrief';
 import { ResumeViewer } from './components/resume/ResumeViewer';
 import { Contact } from './components/sections/Contact';
 import { Demos } from './components/sections/Demos';
@@ -44,6 +45,7 @@ export default function App() {
       <Footer />
       <ScrollTopButton />
       <ResumeViewer />
+      <ProjectBrief />
       <CommandPalette />
       <CursorFollower />
     </>

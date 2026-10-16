@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
+import { briefHash, openBrief } from '../../lib/brief';
 import { openResume, resumeHash } from '../../lib/resume';
 import { Icon } from './Icon';
+
+const isPlainClick = (event) => event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey;
 
 // Link styled as a button.
 export function ButtonLink({ href, variant = 'primary', icon, iconPosition = 'end', className = '', children, ...rest }) {
@@ -18,7 +21,7 @@ export function ButtonLink({ href, variant = 'primary', icon, iconPosition = 'en
 export function ResumeButton({ variant = 'secondary', children = 'View Resume', className = '', onClick, ...rest }) {
   const open = (event) => {
     onClick?.(event);
-    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    if (!isPlainClick(event)) return;
     event.preventDefault();
     openResume();
   };
@@ -27,6 +30,22 @@ export function ResumeButton({ variant = 'secondary', children = 'View Resume', 
     <a className={`btn btn-${variant} resume-open ${className}`.trim()} href={resumeHash} aria-haspopup="dialog" onClick={open} {...rest}>
       <span>{children}</span>
       <Icon name="file" />
+    </a>
+  );
+}
+
+// Opens the "Start a project" brief, the same way: a real link to /#start-project.
+export function BriefButton({ variant = 'primary', children = 'Start a project', className = '', ...rest }) {
+  const open = (event) => {
+    if (!isPlainClick(event)) return;
+    event.preventDefault();
+    openBrief();
+  };
+
+  return (
+    <a className={`btn btn-${variant} ${className}`.trim()} href={briefHash} aria-haspopup="dialog" onClick={open} {...rest}>
+      <span>{children}</span>
+      <Icon name="arrowRight" />
     </a>
   );
 }

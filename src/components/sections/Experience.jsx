@@ -1,6 +1,7 @@
+import { inquiry } from '../../content/inquiry';
 import { experience } from '../../content/profile';
 import { openCertificate } from '../../lib/certificates';
-import { TagList } from '../ui/Button';
+import { BriefButton, TagList } from '../ui/Button';
 import { Icon } from '../ui/Icon';
 import { Reveal, Section } from '../ui/Section';
 import { Certificates } from './Certificates';
@@ -20,7 +21,7 @@ export function Experience() {
             {experience.map((job, i) => (
               <Reveal
                 as="li"
-                key={job.organization}
+                key={job.role}
                 className="timeline-item spotlight"
                 data-pointer
                 style={{ '--i': i }}
@@ -40,6 +41,15 @@ export function Experience() {
                   <button type="button" className="text-link cert-link" onClick={() => openCertificate(job.certificate)}>
                     <Icon name="award" size={15} /> View certificate
                   </button>
+                )}
+                {job.inquiry && (
+                  <div className="timeline-cta">
+                    <BriefButton className="btn-sm" />
+                    <span className="timeline-cta-note">
+                      <span className="status-dot" aria-hidden="true" />
+                      Open for projects · I reply {inquiry.replyTime}
+                    </span>
+                  </div>
                 )}
               </Reveal>
             ))}

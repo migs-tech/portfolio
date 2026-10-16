@@ -6,6 +6,7 @@ import { confetti } from '../../lib/confetti';
 import { canTiltWithDevice, enableDeviceTilt } from '../../lib/deviceTilt';
 import { paletteShortcut } from '../../lib/palette';
 import { ping } from '../../lib/ping';
+import { openBrief } from '../../lib/brief';
 import { downloadResume, openResume } from '../../lib/resume';
 import { refreshViews } from '../../lib/views';
 import { toggleTheme } from '../../lib/theme';
@@ -14,7 +15,7 @@ import { Icon } from './Icon';
 const displayUrl = (url) => url.replace(/^https?:\/\//, '').replace(/\/$/, '');
 const smooth = () => (window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth');
 
-// Scroll to a section and move keyboard focus there, closing a case study or the résumé first if one is open.
+// Scroll to a section and move keyboard focus there, closing a case study, the résumé or the project brief first if one is open.
 function goTo(id) {
   const scroll = () => {
     const target = document.getElementById(id);
@@ -23,7 +24,7 @@ function goTo(id) {
     target.setAttribute('tabindex', '-1');
     target.focus({ preventScroll: true });
   };
-  const dialogs = [...document.querySelectorAll('.project-dialog[open], .resume-dialog[open]')];
+  const dialogs = [...document.querySelectorAll('.project-dialog[open], .resume-dialog[open], .brief-dialog[open]')];
   if (!dialogs.length) {
     setTimeout(scroll, 60);
     return;
@@ -104,6 +105,8 @@ function buildCommands() {
         goTo('contact');
         setTimeout(() => document.getElementById('contact-name')?.focus({ preventScroll: true }), 700);
       } },
+    { id: 'brief', group: 'Actions', label: 'Start a project', hint: 'freelance', icon: 'send',
+      keywords: 'hire commission website online store shop e-commerce web system quote inquiry brief budget', run: openBrief },
     { id: 'theme', group: 'Actions', label: 'Switch light / dark theme', icon: 'moon', keywords: 'dark light mode colour color', run: () => toggleTheme() },
     { id: 'flip', group: 'Actions', label: 'Flip the photo', icon: 'rotate', keywords: 'graduation portrait picture',
       run: () => {

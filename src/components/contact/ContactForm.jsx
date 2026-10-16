@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { profile } from '../../content/profile';
 import { confetti } from '../../lib/confetti';
+import { CONTACT_ENDPOINT as ENDPOINT, EMAIL_PATTERN } from '../../lib/contact';
 import { Icon } from '../ui/Icon';
 
 // Two delivery modes:
@@ -8,8 +9,6 @@ import { Icon } from '../ui/Icon';
 //    and success is shown only after the service confirms it received the message.
 // 2. No endpoint: the form opens the visitor's email app with the message filled in.
 //    It never claims the message was sent, because the visitor still has to press send.
-const ENDPOINT = import.meta.env.VITE_CONTACT_ENDPOINT?.trim() || '';
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 function validate(values) {
   const errors = {};
@@ -157,7 +156,7 @@ export function ContactForm() {
   );
 }
 
-function FieldError({ id, message }) {
+export function FieldError({ id, message }) {
   if (!message) return null;
   return (
     <p id={id} className="field-error">

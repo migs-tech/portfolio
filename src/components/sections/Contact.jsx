@@ -2,7 +2,7 @@ import { profile, socialLinks } from '../../content/profile';
 import { ContactForm } from '../contact/ContactForm';
 import { CopyButton } from '../contact/CopyButton';
 import { Avatar } from '../ui/Avatar';
-import { ResumeButton } from '../ui/Button';
+import { BriefButton, ResumeButton } from '../ui/Button';
 import { Icon } from '../ui/Icon';
 import { Reveal, Section } from '../ui/Section';
 
@@ -50,7 +50,10 @@ export function Contact() {
               </li>
             ))}
           </ul>
-          <ResumeButton />
+          <div className="contact-actions">
+            <BriefButton />
+            <ResumeButton />
+          </div>
         </Reveal>
 
         <Reveal className="contact-form-wrap spotlight" data-pointer style={{ '--i': 1 }}>
