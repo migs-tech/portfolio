@@ -1,10 +1,11 @@
 // A short confetti burst on a full-screen canvas, removed when it finishes.
-// `origin` is a point in viewport pixels (defaults to the upper middle).
+// `origin` is a point in viewport pixels (defaults to the upper middle). Pass an
+// open <dialog> as `parent`: the page itself is drawn underneath modal dialogs.
 // Does nothing for visitors who prefer reduced motion.
 const COLORS = ['#2457c5', '#8fb3ff', '#217140', '#6fcf8e', '#f2b84b', '#e8618c', '#ffffff'];
 const DURATION = 1900;
 
-export function confetti({ origin, count = 150 } = {}) {
+export function confetti({ origin, count = 150, parent = document.body } = {}) {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
   const width = window.innerWidth;
@@ -15,7 +16,7 @@ export function confetti({ origin, count = 150 } = {}) {
   canvas.setAttribute('aria-hidden', 'true');
   canvas.width = width * dpr;
   canvas.height = height * dpr;
-  document.body.append(canvas);
+  parent.append(canvas);
   const ctx = canvas.getContext('2d');
   ctx.scale(dpr, dpr);
 

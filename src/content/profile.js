@@ -138,13 +138,14 @@ export const experience = [
     certificate: 'ojt', // id in `certificates` below
   },
   {
-    organization: 'Self-employed',
+    organization: 'Freelance',
     role: 'Web Developer',
     period: 'Jul 2024 – Dec 2025',
     year: '2025',
     summary:
       'Built responsive portfolio and e-commerce websites for clients with HTML, CSS, JavaScript and React: gathered requirements, customized layouts and features, and delivered on schedule.',
     tags: ['React', 'JavaScript', 'HTML & CSS', 'Client work'],
+    inquiry: true, // shows "Start a project" (components/inquiry/ProjectBrief.jsx)
   },
   {
     organization: 'Freelance',

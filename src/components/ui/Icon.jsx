@@ -110,6 +110,14 @@ const paths = {
     </>
   ),
   link: <path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1" />,
+  cart: (
+    <>
+      <circle cx="9.5" cy="19.5" r="1.5" />
+      <circle cx="17" cy="19.5" r="1.5" />
+      <path d="M3 4h2.4l2.3 11.2h10.5L20.5 8H6.4" />
+    </>
+  ),
+  send: <path d="M20.5 3.5 10 14M20.5 3.5l-6.8 17-3.7-6.5-6.5-3.7 17-6.8Z" />,
 };
 
 export function Icon({ name, size = 18, className = '', label }) {

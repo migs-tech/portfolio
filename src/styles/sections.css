@@ -1288,6 +1288,22 @@
   margin-top: 14px;
 }
 
+.timeline-cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  margin-top: 16px;
+}
+
+.timeline-cta-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8125rem;
+  color: var(--ink-3);
+}
+
 .edu-card {
   padding: 22px;
   border: 1px solid var(--line);
@@ -1685,9 +1701,22 @@
   text-decoration-thickness: 2px;
 }
 
-.contact-panel .btn {
-  align-self: flex-start;
+.contact-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
   margin-top: auto;
+}
+
+/* The panel is inverted, so the primary button is too. */
+.contact-panel .btn-primary {
+  background: var(--bg);
+  color: var(--ink);
+}
+
+.contact-panel .btn-primary:hover {
+  background: var(--accent);
+  color: var(--on-accent);
 }
 
 .contact-panel .btn-secondary {
